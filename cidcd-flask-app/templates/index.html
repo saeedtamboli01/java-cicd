@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/style.css">
+  <title>HOME</title>
+</head>
+<body>
+
+  <main>
+    <div class="card-meta">8 modules • 4 projects</div>
+    <a class="btn small" href="#">View</a>
+
+    <section id="pricing" class="section">
+      <div class="container">
+        <h2 class="section-title">Transparent pricing</h2>
+        <div class="grid pricing-grid">
+          <div class="price-card">
+            <h3>Free</h3>
+            <div class="price">$0<span class="period">/mo</span></div>
+            <ul>
+              <li>Access to community resources not possible good</li>
+              <li>10 free courses</li>
+            </ul>
+            <a class="btn ghost" href="#">Get Free App</a>
+          </div>
+
+          <div class="price-card featured">
+            <h3>Pro</h3>
+            <div class="price">$29<span class="period">/mo</span></div>
+            <ul>
+              <li>Full course catalog</li>
+              <li>Mentorship hours</li>
+              <li>Project reviews</li>
+            </ul>
+            <a class="btn primary" href="#">Start Pro</a>
+          </div>
+
+          <div class="price-card">
+            <h3>Enterprise</h3>
+            <div class="price">Custom</div>
+            <ul>
+              <li>Team plans & SSO</li>
+              <li>Dedicated success manager</li>
+            </ul>
+            <a class="btn" href="#">Contact Sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🔥 Dynamic Features Section -->
+    <section id="features" class="section">
+      <div class="container">
+        <h2 class="section-title">Platform Features</h2>
+        <ul>
+          {% for feature in features %}
+            <li><strong>{{ feature.title }}</strong>: {{ feature.desc }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- 🌍 Dynamic Metrics Section -->
+    <section id="metrics" class="section">
+      <div class="container">
+        <h2 class="section-title">Global Reach</h2>
+        <ul>
+          <li>Students: {{ metrics.students }}</li>
+          <li>Courses: {{ metrics.courses }}</li>
+          <li>Countries: {{ metrics.countries }}</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- 🕒 Footer with Dynamic Year -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© {{ current_year }} NovaLearn. All rights reserved.</div>
+      <div class="social">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
