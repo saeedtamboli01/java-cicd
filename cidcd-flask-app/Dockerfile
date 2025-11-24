@@ -1,32 +1,25 @@
 # Use official Python image
 FROM python:3.12-slim
 
-# Prevent Python from writing .pyc and enable stdout logging
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
 # Set work directory
 WORKDIR /app
 
-# System dependencies (for production stability)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies first for caching
+# Copy dependencies first for caching
 COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy the Flask app source code
 COPY . .
 
-# Expose Flask port
+# Expose the port Flask will run on
 EXPOSE 5000
 
-# Environment variables
+# Set environment variable for Flask
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_ENV=production
 
-# Run Flask app
+# Start the Flask app
 CMD ["flask", "run"]

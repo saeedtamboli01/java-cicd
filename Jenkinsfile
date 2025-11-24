@@ -2,40 +2,50 @@ pipeline {
     agent none
 
     environment {
-        DOCKERHUB_USER = 'yourusername'
-        DOCKERHUB_REPO = 'flask-app'
+        DOCKERHUB_USER = 'saeed126'
+        IMAGE_NAME = 'flask-app'
+        DOCKERHUB_PASS = credentials('dockerhub-pass')
     }
 
     stages {
-        stage('Build Image on node1') {
-            agent { label 'node1' }
 
+        stage('Checkout Code') {
+            agent { label 'built-in' }
             steps {
-                echo "Building Docker image on node1..."
+                git branch: 'main',
+                    url: 'https://github.com/saeedtamboli01/java-cicd.git'
+                
+                stash name: 'source_code', includes: '**'
+            }
+        }
 
+        stage('Build Docker Image') {
+            agent { label 'node1' }
+            steps {
+                unstash 'source_code'
                 sh '''
-                docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:latest .
-                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:latest
+                docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+                docker build -t $DOCKERHUB_USER/$IMAGE_NAME:latest .
+                docker push $DOCKERHUB_USER/$IMAGE_NAME:latest
                 '''
             }
         }
 
-        stage('Deploy on node2') {
+        stage('Deploy') {
             agent { label 'node2-deploy' }
-
             steps {
-                echo "Deploying Flask app on node2..."
-
                 sh '''
-                docker pull $DOCKERHUB_USER/$DOCKERHUB_REPO:latest
+                docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+
+                docker pull $DOCKERHUB_USER/$IMAGE_NAME:latest
 
                 docker stop flask-app || true
                 docker rm flask-app || true
 
-                docker run -d -p 5000:5000 \
+                docker run -d \
                     --name flask-app \
-                    $DOCKERHUB_USER/$DOCKERHUB_REPO:latest
+                    -p 5000:5000 \
+                    $DOCKERHUB_USER/$IMAGE_NAME:latest
                 '''
             }
         }
